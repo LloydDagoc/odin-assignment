@@ -1,0 +1,160 @@
+What is wrong with the current code
+
+1. The read-toggle button is broken.
+At js/books.js lines 57-58, you correctly find the matching book and store it in a variable called "find", but then you call:
+
+book.toggleRead();
+
+There is no variable named "book" in that scope, so clicking the toggle button will fail.
+
+What it should mean logically:
+- Find the correct book object from myLibrary
+- Call toggleRead() on that found object
+- Re-render the table
+
+
+2. The remove logic can delete the wrong book.
+At js/books.js lines 67-68, you use findIndex() and then splice():
+
+const index = myLibrary.findIndex(book => book.id == id);
+myLibrary.splice(index, 1);
+
+The problem is that if findIndex() does not find a match, it returns -1.
+In JavaScript, splice(-1, 1) removes the last item in the array.
+
+That means if something goes wrong with the id lookup, the last book could be deleted by accident.
+
+
+3. The project does not yet match the "New Book button opens the form" requirement.
+Right now the form is always visible in the HTML.
+That is okay while testing, but the assignment specifically says there should be a "New Book" button that brings up the form.
+
+So your app still needs:
+- A New Book button
+- Some way to show the form when clicked
+- Optionally a way to hide it again after submit or cancel
+
+
+4. The constructor works, but the formatting is harder to read than it needs to be.
+Inside the Book constructor, you used commas between assignments:
+
+this.id = crypto.randomUUID(),
+this.title = title,
+this.author = author,
+this.pages = pages,
+this.isRead = isRead,
+
+JavaScript allows this because of the comma operator, but it is unusual and confusing for beginners.
+It is much clearer to use semicolons or plain separate statements.
+
+As a rule:
+- Use one assignment per line
+- End each statement clearly
+
+
+5. The info() method is inside the constructor.
+This is not a bug, but it is not the best design if every Book object shares the same behavior.
+
+Right now each time you create a book, JavaScript creates a brand new copy of the info() function.
+That works, but it is less efficient and less clean than putting shared methods on the prototype.
+
+You already did this correctly for:
+
+Book.prototype.toggleRead = function() {
+    this.isRead = !this.isRead;
+}
+
+That same pattern could also be used for info().
+
+
+6. Some naming is a little off compared to the assignment.
+The assignment suggests a function like:
+
+addBookToLibrary()
+
+Your function is named:
+
+addBooks()
+
+This is not technically wrong, but the singular name is clearer because one call creates one book object and adds one book to the array.
+
+
+7. There are a few small HTML issues.
+In views/books.html:
+- The title input has the name attribute twice
+- The pages input should probably use type="number"
+- The checkbox has an id but no name, which is okay for direct JavaScript access, but less ideal for form structure
+
+These are not major bugs, but they are worth cleaning up.
+
+
+8. Some CSS makes the action buttons too tiny to use comfortably.
+In style/books.css:
+
+.action button{
+    font-size: 4px;
+}
+
+That is extremely small, so the buttons may look broken or be hard to click.
+
+
+What you are already doing well
+
+You already have several important pieces correct:
+
+- You store the data in myLibrary first
+- You keep rendering separate in displayBooks()
+- You use crypto.randomUUID() for stable ids
+- You use preventDefault() on form submit
+- You use event delegation with document.addEventListener()
+- You created a Book prototype method for toggling read status
+
+That means your foundation is actually pretty good. The project is not far off.
+
+
+The big idea you should understand
+
+This project is really about separating data from display.
+
+Think of it like this:
+
+1. myLibrary is the source of truth
+2. displayBooks() reads from myLibrary and builds the UI
+3. User actions update myLibrary
+4. Then the UI is rendered again
+
+That is the habit this assignment is trying to teach you.
+
+So instead of thinking:
+"How do I directly change the table?"
+
+Try to think:
+"How do I update the array, then re-render the table?"
+
+
+Best next fixes to make
+
+1. Fix the toggle handler so it calls toggleRead() on the found book
+2. Protect the remove logic so it only splices if index is not -1
+3. Rename addBooks() to addBookToLibrary()
+4. Add a New Book button and make the form open from that button
+5. Clean up the constructor formatting
+6. Optionally move info() onto Book.prototype too
+
+
+Teacher/Mentor note
+
+Your code is not "bad". It shows that you already understand the main architecture:
+- array for state
+- constructor for objects
+- render function for DOM
+- form submission for adding data
+- buttons for updating/removing state
+
+Most of the problems are normal beginner issues:
+- wrong variable name in one event handler
+- missing safety check before splice()
+- a few HTML/CSS cleanup issues
+- one assignment style that is legal but awkward
+
+That is a very normal place to be. You are closer than you probably think.

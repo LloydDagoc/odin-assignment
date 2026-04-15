@@ -5,9 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../style/books.css">
-    <script src="../js/books.js"></script>
+    <script src="../js/books.js" defer></script>
 </head>
 <body>
-    
+    <button id="addBookBtn" class="addBook">Add Book</button>
+    <div class="table" >
+        <table class="title">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Pages</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="body">
+             </tbody>
+        </table>
+    </div>
+    <div class="form overlay" id="popUpForm">
+        <form id="bookForm">
+            <label for="title">Title</label>
+            <input name="title" id="title" name="title" placeholder="title" required>
+            <label for="author">Author</label>
+            <input name="author" id="author" placeholder="Author">
+            <label for="pages">Pages</label>
+            <input name="pages" id="pages" placeholder="Pages">
+            <label>Read?
+                <input type="checkbox" id="isRead">
+            </label>
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
 </body>
 </html>
