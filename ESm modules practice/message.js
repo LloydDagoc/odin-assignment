@@ -1,3 +1,4 @@
-export const greeting = "Hello Students";
-export const farewell = "Goodbye Students";
+const greeting = "Hello Students!";
+const farewell = "Goodbye Students!";
 
+export {greeting, farewell};
